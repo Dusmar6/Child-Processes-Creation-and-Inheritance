@@ -7,6 +7,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <cstdlib>
+#include <pthread.h>
 
 using namespace std;
 
@@ -19,27 +20,26 @@ int main(){
 
     bool cont = true;
     while (cont){
-
-        cout<<"Enter a word length: ";
-        cin >> length;
+        cout<<"Enter a length. Type -1 to exit."<<endl;
+        cin >>length;
         cout<<"Initiating Search."<<endl;
-
-        long child = fork();
+        if (length == -1){
+            exit(0);
+        }
+        int child = fork();
         if (child == 0){
             // in child
-
             istringstream stm(doc) ;
             string word ;
             vector<string> words;
             while( stm >> word ){
                 words.push_back(word); //puts each word in a vector
             }
-
             bool found = false;
             int count = 0;
             while(!found){ //injected bug. If a word of that length is not found, then infinite loop
-            
                 cout<< "."<<endl;
+                sleep(0.5);
                 for ( const string& word: words){
                     if (word.size() == length){ //loops through vector, checks length
                         count++;
@@ -51,10 +51,10 @@ int main(){
 
             exit(0);
         }
-    return 0;
+    
     }
+  return 0;
 }
-
 
 
 
